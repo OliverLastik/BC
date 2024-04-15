@@ -2,7 +2,7 @@ from PIL import Image
 import os
 
 
-input_dir_path = 'C:\\Users\\Oliver\\Downloads'
+input_dir_path = r'C:\\Users\\Oliver\\Downloads'
 
 output_dir_path = 'C:\\Users\\Oliver\\Downloads\\resize'
 target_size = 299
