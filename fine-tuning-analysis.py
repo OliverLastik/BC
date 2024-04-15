@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
-from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from sklearn.metrics import confusion_matrix, classification_report
 import seaborn as sns
@@ -47,7 +46,7 @@ plt.show()
 # Print classification report
 print(classification_report(true_classes, predicted_classes, target_names=class_labels))
 
-# Optional: Display some misclassified images
+# Display some misclassified images
 misclassified_idxs = np.where(predicted_classes != true_classes)[0]
 if len(misclassified_idxs) > 0:
     fig, axes = plt.subplots(3, 3, figsize=(15, 15))

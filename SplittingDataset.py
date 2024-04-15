@@ -1,88 +1,62 @@
 import os
 import shutil
-from sklearn.model_selection import train_test_split
+import numpy as np
 
-# Set up your paths
-base_path = 'C:\\Users\\oliver.lastik\\Desktop\\BP\\dataset'
-artists_folders = [folder for folder in os.listdir(base_path) if 'RS' in folder]
+# Set paths
+input_dir_path = r'C:\Users\Oliver\OneDrive\Počítač\BP\NotResizedDataset'
+output_base_dir = r'E:\DatasetNonResized'
 
-# Splitting ratios
+# Ratios for splitting
 train_ratio = 0.7
 val_ratio = 0.15
 test_ratio = 0.15
 
-# Create the train/val/test directories if they don't exist
-for split in ['train', 'val', 'test']:
-    for artist in artists_folders:
-        os.makedirs(os.path.join(base_path, split, artist), exist_ok=True)
+# Create the output base directory if it does not exist
+if not os.path.exists(output_base_dir):
+    os.makedirs(output_base_dir)
 
+# Function to split data and copy files
+def split_data(author_folder):
+    # Paths for train, validation, test
+    train_dir = os.path.join(output_base_dir, 'train', author_folder)
+    val_dir = os.path.join(output_base_dir, 'val', author_folder)
+    test_dir = os.path.join(output_base_dir, 'test', author_folder)
 
-# Function to split data and move files
-def split_and_move_files(artist_folder):
-    files = os.listdir(os.path.join(base_path, artist_folder))
-    train_files, test_files = train_test_split(files, test_size=(1 - train_ratio), random_state=42)
-    val_files, test_files = train_test_split(test_files, test_size=test_ratio / (test_ratio + val_ratio),
-                                             random_state=42)
+    # Create directories if they do not exist
+    for path in [train_dir, val_dir, test_dir]:
+        if not os.path.exists(path):
+            os.makedirs(path)
 
-    # Function to move files to their respective directories
-    def move_files(files, destination):
+    # Get all images
+    images = [file for file in os.listdir(os.path.join(input_dir_path, author_folder))
+              if file.lower().endswith(('.jpg', '.jpeg', '.png'))]
+    np.random.shuffle(images)  # Shuffle the images randomly
+
+    # Calculate split indices
+    train_end = int(len(images) * train_ratio)
+    val_end = train_end + int(len(images) * val_ratio)
+
+    # Split images into train, validation, test
+    train_images = images[:train_end]
+    val_images = images[train_end:val_end]
+    test_images = images[val_end:]
+
+    # Function to copy files
+    def copy_files(files, dest_dir):
         for file in files:
-            shutil.move(os.path.join(base_path, artist_folder, file),
-                        os.path.join(base_path, destination, artist_folder, file))
+            src_path = os.path.join(input_dir_path, author_folder, file)
+            dest_path = os.path.join(dest_dir, file)
+            shutil.copy(src_path, dest_path)
 
-    # Move the files
-    move_files(train_files, 'train')
-    move_files(val_files, 'val')
-    move_files(test_files, 'test')
+    # Copy files to their respective directories
+    copy_files(train_images, train_dir)
+    copy_files(val_images, val_dir)
+    copy_files(test_images, test_dir)
+    print(f"Finished splitting data for {author_folder}")
 
+# Loop over each author's folder and split the data
+for author_folder in os.listdir(input_dir_path):
+    if os.path.isdir(os.path.join(input_dir_path, author_folder)):  # Check if it's a directory
+        split_data(author_folder)
 
-# Apply the function to each artist folder
-for artist_folder in artists_folders:
-    split_and_move_files(artist_folder)
-
-print("Dataset successfully split into train, validation, and test sets.")
-
-
-def check_splits(base_path, splits=['train', 'val', 'test']):
-    duplicates = {}
-
-    # We will check duplicates for each artist folder
-    for artist_folder in os.listdir(base_path):
-        # Skip if not a directory
-        if not os.path.isdir(os.path.join(base_path, artist_folder)):
-            continue
-
-        # Create a set to store filenames for each artist
-        all_files = set()
-
-        # Check each split directory for duplicates
-        for split in splits:
-            split_path = os.path.join(base_path, split, artist_folder)
-            # If the split path doesn't exist (e.g., no 'train' folder), skip to next
-            if not os.path.exists(split_path):
-                continue
-
-            # Iterate over each file in the artist directory
-            for file in os.listdir(split_path):
-                # Check if file is already in the set
-                if file in all_files:
-                    # Initialize the duplicate set for this artist if it hasn't been already
-                    if artist_folder not in duplicates:
-                        duplicates[artist_folder] = set()
-                    duplicates[artist_folder].add(file)
-                all_files.add(file)
-
-    return duplicates
-
-
-# Replace with your actual base dataset path
-base_dataset_path = 'C:\\Users\\oliver.lastik\\Desktop\\BP\\dataset'
-duplicates = check_splits(base_dataset_path)
-
-# Improved printing to show duplicates by artist
-if duplicates:
-    for artist, files in duplicates.items():
-        print(f"Duplicate files found for {artist}: {files}")
-else:
-    print("No duplicate files found within the same artist's folder. The dataset is properly split.")
-
+print("Data has been split and copied successfully.")

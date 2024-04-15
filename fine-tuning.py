@@ -14,9 +14,9 @@ class DebugCallback(Callback):
         print(f"Ending Epoch {epoch}, Logs: {logs}")
 
 
-train_dir = r'C:\Users\Oliver\OneDrive\Počítač\BP\dataset\train'
-validation_dir = r'C:\Users\Oliver\OneDrive\Počítač\BP\dataset\val'
-test_dir = r'C:\Users\Oliver\OneDrive\Počítač\BP\dataset\test'
+validation_dir = r'E:\Dataset\val'
+train_dir = r'E:\Dataset\train'
+test_dir = r'E:\Dataset\test'
 
 # Data Generators with Augmentation
 train_datagen = ImageDataGenerator(
@@ -69,7 +69,7 @@ history = model.fit(
     train_generator,
     epochs=initial_epochs,
     validation_data=validation_generator,
-    callbacks=[EarlyStopping(monitor='val_loss', patience=3, verbose=1), ModelCheckpoint('best_model_initial.h5', save_best_only=True)]
+    callbacks=[EarlyStopping(monitor='val_loss', patience=3, verbose=1), ModelCheckpoint('best_model_initial.keras', save_best_only=True)]
 )
 
 # Start fine-tuning
@@ -94,4 +94,4 @@ history_fine = model.fit(
 # Evaluating the model on the test set
 test_loss, test_accuracy = model.evaluate(test_generator)
 print(f"Test Loss: {test_loss}, Test Accuracy: {test_accuracy}")
-#Test Loss: 0.3125864565372467, Test Accuracy: 0.895652174949646 - last try
+#Test Loss: 0.3125864565372467, Test Accuracy: 0.895652174949646 - best try
