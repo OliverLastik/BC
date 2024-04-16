@@ -57,3 +57,38 @@ print(classification_report(val_labels_num, val_predictions, target_names=class_
 test_predictions = clf.predict(test_data)
 print("Testing the model\n")
 print(classification_report(test_labels_num, test_predictions, target_names=class_labels))
+
+####Validating the model
+##
+##                  precision    recall  f1-score   support
+##
+##     EdmundGwerk       0.47      0.41      0.44        22
+##FerninandHloznik       0.52      0.77      0.62        22
+##FrantisekStudeny       0.57      0.73      0.64        22
+##     JozefKollar       0.67      0.64      0.65        22
+##   MariaMedvecka       0.65      0.77      0.71        22
+##   MilosBazovsky       0.88      0.64      0.74        22
+##  VincentHloznik       0.64      0.32      0.42        22
+##
+##        accuracy                           0.61       154
+##       macro avg       0.63      0.61      0.60       154
+##    weighted avg       0.63      0.61      0.60       154
+##
+##Testing the model
+##
+##                  precision    recall  f1-score   support
+##
+##     EdmundGwerk       0.64      0.61      0.62        23
+##FerninandHloznik       0.52      0.48      0.50        23
+##FrantisekStudeny       0.67      0.43      0.53        23
+##     JozefKollar       0.33      0.30      0.32        23
+##   MariaMedvecka       0.52      0.65      0.58        23
+##   MilosBazovsky       0.76      0.70      0.73        23
+##  VincentHloznik       0.47      0.65      0.55        23
+##
+##        accuracy                           0.55       161
+##       macro avg       0.56      0.55      0.55       161
+##    weighted avg       0.56      0.55      0.55       161
+
+
+
