@@ -8,11 +8,11 @@ import os
 
 print(os.getcwd())
 # Load the fine-tuned model
-model_path = r'C:\Users\Oliver\OneDrive\Počítač\BP\cdd\pythonProject\best_model_initial.keras'
+model_path = r'C:\Users\Oliver\OneDrive\Počítač\BP\cdd\pythonProject\best_model_finetuned2.keras'
 print(os.path.exists(model_path))
 model = tf.keras.models.load_model(model_path)
 # Test data generator
-test_dir = r'C:\Users\Oliver\OneDrive\Počítač\BP\dataset\test'
+test_dir = r'E:\Dataset\test'
 test_datagen = ImageDataGenerator(rescale=1./255)
 test_generator = test_datagen.flow_from_directory(
     test_dir,
@@ -30,7 +30,9 @@ print(f"Test Loss: {test_loss}, Test Accuracy: {test_accuracy}")
 predictions = model.predict(test_generator, steps=test_generator.samples // test_generator.batch_size + 1)
 predicted_classes = np.argmax(predictions, axis=1)
 true_classes = test_generator.classes
-class_labels = list(test_generator.class_indices.keys())
+class_labels = list(test_generator.class_indices.keys())  # Ensure this prints correctly
+
+print("Class labels:", class_labels)
 
 # Generate confusion matrix
 conf_matrix = confusion_matrix(true_classes, predicted_classes)
@@ -46,7 +48,7 @@ plt.show()
 # Print classification report
 print(classification_report(true_classes, predicted_classes, target_names=class_labels))
 
-# Display some misclassified images
+# Optional: Display some misclassified images
 misclassified_idxs = np.where(predicted_classes != true_classes)[0]
 if len(misclassified_idxs) > 0:
     fig, axes = plt.subplots(3, 3, figsize=(15, 15))
