@@ -2,8 +2,8 @@ from PIL import Image, ImageOps
 import os
 
 input_dir_path = r'E:\NonResized'
-output_dir_path = r'E:\resize'
-target_size = (299, 299)  # This is now a tuple
+output_dir_path = r'E:\ResNetResized'
+target_size = (224, 224)
 
 # Ensure the output directory exists
 if not os.path.exists(output_dir_path):

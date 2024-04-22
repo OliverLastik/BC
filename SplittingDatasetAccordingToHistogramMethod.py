@@ -3,8 +3,8 @@ import shutil
 
 # Set the base directories
 non_resized_dir = r'E:\DatasetNonResized'
-resized_dir = r'E:\resize'
-output_dir = r'E:\Dataset'
+resized_dir = r'E:\ResNetResized'
+output_dir = r'E:\ResNetDataset'
 
 # Ensure the output directory exists
 if not os.path.exists(output_dir):
