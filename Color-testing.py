@@ -58,7 +58,7 @@ test_predictions = clf.predict(test_data)
 print("Testing the model\n")
 print(classification_report(test_labels_num, test_predictions, target_names=class_labels))
 
-####Validating the model
+##Validating the model
 ##
 ##                  precision    recall  f1-score   support
 ##
