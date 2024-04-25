@@ -3,8 +3,8 @@ import shutil
 import numpy as np
 
 # Set paths
-input_dir_path = r'C:\Users\Oliver\OneDrive\Počítač\BP\NotResizedDataset'
-output_base_dir = r'E:\DatasetNonResized'
+input_dir_path = r'E:\TiledImages224'
+output_base_dir = r'E:\TiledDataset224'
 
 # Ratios for splitting
 train_ratio = 0.7
