@@ -6,9 +6,9 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 # Path setup
-validation_dir = r'E:\ResNetDataset\val'
-train_dir = r'E:\ResNetDataset\train'
-test_dir = r'E:\ResNetDataset\test'
+validation_dir = r'E:\TiledDataset224\val'
+train_dir = r'E:\TiledDataset224\train'
+test_dir = r'E:\TiledDataset224\test'
 
 # Data Generators with Augmentation
 train_datagen = ImageDataGenerator(
@@ -24,22 +24,23 @@ train_datagen = ImageDataGenerator(
 validation_datagen = ImageDataGenerator(rescale=1./255)
 test_datagen = ImageDataGenerator(rescale=1./255)
 
+batch_size = 32
 train_generator = train_datagen.flow_from_directory(
     train_dir,
     target_size=(224, 224),
-    batch_size=20,
+    batch_size=batch_size,
     class_mode='categorical'
 )
 validation_generator = validation_datagen.flow_from_directory(
     validation_dir,
     target_size=(224, 224),
-    batch_size=20,
+    batch_size=batch_size,
     class_mode='categorical'
 )
 test_generator = test_datagen.flow_from_directory(
     test_dir,
     target_size=(224, 224),
-    batch_size=20,
+    batch_size=batch_size,
     class_mode='categorical',
     shuffle=False
 )
@@ -49,8 +50,9 @@ base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224,
 base_model.trainable = False  # Initially set the base model to be not trainable
 
 # Adding custom layers on top
-x = GlobalAveragePooling2D()(base_model.output)
-x = Flatten()(x)  # Adding a Flatten layer
+x = base_model.output
+x = GlobalAveragePooling2D()(x)
+x = Flatten()(x)  # Ensure Flatten is correctly applied
 x = Dense(512, activation='relu')(x)
 x = Dropout(0.5)(x)  # Adding a dropout layer
 predictions = Dense(train_generator.num_classes, activation='softmax')(x)
@@ -65,7 +67,7 @@ history = model.fit(
     train_generator,
     epochs=initial_epochs,
     validation_data=validation_generator,
-    callbacks=[EarlyStopping(monitor='val_loss', patience=3, verbose=1), ModelCheckpoint('best_model_initial_vgg16.keras', save_best_only=True)]
+    callbacks=[EarlyStopping(monitor='val_loss', patience=3, verbose=1), ModelCheckpoint('best_model_initial_vgg16_newdataset.keras', save_best_only=True)]
 )
 
 # Start fine-tuning
@@ -74,7 +76,7 @@ for layer in base_model.layers[:15]:  # Freeze the first 15 layers
     layer.trainable = False
 
 # Recompile the model with adjusted learning rate
-model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4),
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1.6e-4),
               loss='categorical_crossentropy', metrics=['accuracy'])
 
 fine_tune_epochs = 10
@@ -85,9 +87,11 @@ history_fine = model.fit(
     epochs=total_epochs,
     initial_epoch=history.epoch[-1],
     validation_data=validation_generator,
-    callbacks=[EarlyStopping(monitor='val_loss', patience=5, verbose=1), ModelCheckpoint('best_model_finetuned_vgg16.keras', save_best_only=True)]
+    callbacks=[EarlyStopping(monitor='val_loss', patience=5, verbose=1), ModelCheckpoint('best_model_finetuned_vgg16_newdataset.keras', save_best_only=True)]
 )
 
 # Evaluate the model on the test set
 test_loss, test_accuracy = model.evaluate(test_generator)
 print(f"Test Loss: {test_loss}, Test Accuracy: {test_accuracy}")
+
+
