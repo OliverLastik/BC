@@ -30,7 +30,7 @@ def create_image_tiles(input_dir, output_dir, tile_size=(224, 224), overlap=0):
 # Example usage
 input_dir = r'E:\NonResized'
 output_dir = r'E:\TiledImages299'
-tile_size = (299, 299)  # or (299, 299) for other models
+tile_size = (299, 299)
 overlap = 32  # Pixels to overlap tiles
 
 create_image_tiles(input_dir, output_dir, tile_size, overlap)

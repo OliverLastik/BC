@@ -1,9 +1,9 @@
 from PIL import Image, ImageOps
 import os
 
-input_dir_path = r'E:\NonResized'
-output_dir_path = r'E:\ResNetResized'
-target_size = (224, 224)
+input_dir_path = r'C:\Users\Oliver\OneDrive\Počítač\BP\TestingImages'
+output_dir_path = r'C:\Users\Oliver\OneDrive\Počítač\BP\random'
+target_size = (299, 299)
 
 # Ensure the output directory exists
 if not os.path.exists(output_dir_path):
@@ -14,10 +14,8 @@ def resize_and_pad_image(input_path, output_path, target_size):
     with Image.open(input_path) as img:
         # Resize the image with the same aspect ratio and ensure one side is 299 pixels
         img.thumbnail(target_size, Image.Resampling.LANCZOS)
-
         # Pad the image to be 299x299
         img = ImageOps.pad(img, target_size, color='black')
-
         img.save(output_path)
 
 
