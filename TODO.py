@@ -1,4 +1,4 @@
-##Umele zobratie datasetu z origo imagu a rescale na 299x299
+##Umele zobratie datasetu z origo imagu a rescale na 299x299 TICK
 # Implementing Cost-sensitive Learning
 # Radial Histogram
 # Diff Backbone TICK
