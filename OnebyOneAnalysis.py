@@ -6,7 +6,7 @@ from sklearn.metrics import classification_report
 import os
 
 # Load the model
-model_path = r'C:\Users\Oliver\OneDrive\Počítač\BP\cdd\pythonProject\best_model_finetuned2.keras'
+model_path = r'C:\Users\Oliver\OneDrive\Počítač\BP\cdd\pythonProject\best_model_finetuned_InceptionV3_newdataset.keras'
 model = tf.keras.models.load_model(model_path)
 
 # Setup test data generator

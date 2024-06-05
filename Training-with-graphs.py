@@ -4,7 +4,8 @@ from tensorflow.keras.applications.inception_v3 import InceptionV3
 from tensorflow.keras.layers import GlobalAveragePooling2D, Dense
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, Callback
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
+import matplotlib.pyplot as plt
+import pickle
 
 class DebugCallback(Callback):
     def on_epoch_end(self, epoch, logs=None):
@@ -12,10 +13,9 @@ class DebugCallback(Callback):
         print(f"Ending Epoch {epoch}, Logs: {logs}")
 
 
-validation_dir = r'E:\TiledDataset299\val'
-train_dir = r'E:\TiledDataset299\train'
-test_dir = r'E:\TiledDataset299\test'
-
+validation_dir = r'E:\Dataset\val'
+train_dir = r'E:\Dataset\train'
+test_dir = r'E:\Dataset\test'
 
 # Data Generators with Augmentation
 train_datagen = ImageDataGenerator(
@@ -70,8 +70,12 @@ history = model.fit(
     train_generator,
     epochs=initial_epochs,
     validation_data=validation_generator,
-    callbacks=[EarlyStopping(monitor='val_loss', patience=5, verbose=1), ModelCheckpoint('best_model_initial_InceptionV3_newdataset.keras', save_best_only=True)]
+    callbacks=[EarlyStopping(monitor='val_loss', patience=5, verbose=1), ModelCheckpoint('best_model_initial_InceptionV3_with_graphs.keras', save_best_only=True)]
 )
+
+# Save the initial training history
+with open('initial_training_history.pkl', 'wb') as file:
+    pickle.dump(history.history, file)
 
 # Start fine-tuning
 base_model.trainable = True  # Unfreeze the base model
@@ -89,9 +93,49 @@ history_fine = model.fit(
     epochs=total_epochs,
     initial_epoch=history.epoch[-1],
     validation_data=validation_generator,
-    callbacks=[EarlyStopping(monitor='val_loss', patience=5, verbose=1), ModelCheckpoint('best_model_finetuned_InceptionV3_newdataset.keras', save_best_only=True)]
+    callbacks=[EarlyStopping(monitor='val_loss', patience=5, verbose=1), ModelCheckpoint('best_model_finetuned_InceptionV3_with_graphs.keras', save_best_only=True)]
 )
+
+# Save the fine-tuning history
+with open('fine_tuning_history.pkl', 'wb') as file:
+    pickle.dump(history_fine.history, file)
 
 # Evaluating the model on the test set
 test_loss, test_accuracy = model.evaluate(test_generator)
 print(f"Test Loss: {test_loss}, Test Accuracy: {test_accuracy}")
+
+# Load the histories and plot the training/validation accuracy and loss
+with open('initial_training_history.pkl', 'rb') as file:
+    initial_history = pickle.load(file)
+
+with open('fine_tuning_history.pkl', 'rb') as file:
+    fine_tuning_history = pickle.load(file)
+
+# Combine the histories
+acc = initial_history['accuracy'] + fine_tuning_history['accuracy']
+val_acc = initial_history['val_accuracy'] + fine_tuning_history['val_accuracy']
+loss = initial_history['loss'] + fine_tuning_history['loss']
+val_loss = initial_history['val_loss'] + fine_tuning_history['val_loss']
+
+epochs = range(1, len(acc) + 1)
+
+plt.figure(figsize=(14, 5))
+
+plt.subplot(1, 2, 1)
+plt.plot(epochs, acc, 'b', label='Trénovacia presnosť')
+plt.plot(epochs, val_acc, 'r', label='Validačná presnosť')
+plt.title('Trénovacia a validačná presnosť')
+plt.xlabel('Počet epoch')
+plt.ylabel('Presnosť')
+plt.legend()
+
+plt.subplot(1, 2, 2)
+plt.plot(epochs, loss, 'b', label='Trénovacia strata')
+plt.plot(epochs, val_loss, 'r', label='Validačná strata')
+plt.title('Trénovacia a validačná strata')
+plt.xlabel('Počet epoch')
+plt.ylabel('Strata')
+plt.legend()
+
+plt.savefig('training_validation_plot.png')
+plt.show()
