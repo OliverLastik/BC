@@ -18,7 +18,6 @@ def resize_and_pad_image(input_path, output_path, target_size):
         img = ImageOps.pad(img, target_size, color='black')
         img.save(output_path)
 
-
 # Walk through the input directory, and process files from each subdirectory
 for subdir, dirs, files in os.walk(input_dir_path):
     for file_name in files:

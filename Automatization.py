@@ -43,10 +43,10 @@ def handle_more_than_seven_images(image_directory, authors):
                         resize_and_pad_image(os.path.join(author_dir, file), os.path.join(output_author_dir, file))
                 print(f"Resized and organized images for {author}.")
         print("All images have been resized and saved.")
-        print("Proceeding to model evaluation.")
+        print("Identify the author of the artworks.")
         return output_dir
     else:
-        print("Proceeding to model evaluation.")
+        print("Identify the author of the artworks.")
         return image_directory
 
 
@@ -77,11 +77,11 @@ def handle_fewer_than_seven_images(image_directory, authors):
         dst_path = os.path.join(author_dir, file)
         resize_and_pad_image(src_path, dst_path)
         print(f"{file} has been resized and moved to {dst_path}.")
-
+    print("Identify the author of the artworks.")
     return output_directory
 
 def evaluate_model(test_dir):
-    model_path = r'C:\Users\Oliver\OneDrive\Počítač\BP\cdd\pythonProject\best_model_finetuned2.keras'
+    model_path = r'C:\Users\Oliver\OneDrive\Počítač\BP\cdd\pythonProject\best_model_finetuned_InceptionV3_with_graphs.keras.keras'
     model = tf.keras.models.load_model(model_path)
     test_datagen = ImageDataGenerator(rescale=1./255)
     test_generator = test_datagen.flow_from_directory(
