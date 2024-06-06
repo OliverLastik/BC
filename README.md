@@ -1,4 +1,4 @@
-Files for my bachelors' thesis
+Files for my bachelors' thesis. Scripts are split into specific folders for them to be easily recognizable. Each scripts' name have their main use included in name.
 
 Final trained model is free to download using this link: https://drive.google.com/drive/folders/1cg9HICGn4VpeFtx-Ico_YUAmmKWFD_AD?usp=sharing
 
